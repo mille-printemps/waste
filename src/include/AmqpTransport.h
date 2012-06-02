@@ -1,0 +1,63 @@
+// File: AmqpTransport.h - last edit:
+// Chiharu Kawatake	05-30-2012
+// Copyright (c) 2012 by Chiharu Kawatake
+// All rights reserved.
+
+#ifndef _WASTE_AMQP_TRANSPORT_H
+#define _WASTE_AMQP_TRANSPORT_H
+
+#include <string>
+#include <boost/shared_ptr.hpp>
+#include <thrift/transport/TTransportException.h>
+#include <thrift/transport/TBufferTransports.h>
+
+#include "AmqpInterface.h"
+
+namespace waste {
+
+    class AmqpTransport : public apache::thrift::transport::TMemoryBuffer {
+        
+    public:
+        // constructors and destructor
+        // this constructor is for clients
+        AmqpTransport(boost::shared_ptr<Amqp::Channel> channel,
+                      const std::string& exchangeName,
+                      const std::string& routingKey,
+                      const std::string& queueName);
+
+        ~AmqpTransport();
+
+        // public functions
+        bool isOpen();
+        void open();
+        uint32_t read(uint8_t* buf, uint32_t len);
+        void write(const uint8_t* buf, uint32_t len);
+        void close();
+        void flush();
+
+    private:
+        // private constants
+        static const char* MODULE;
+        static const char* NO_REPLY_TO;
+
+        // private variables
+        boost::shared_ptr<Amqp::Channel> fChannel;
+        std::string fExchangeName;
+        std::string fRoutingKey;
+        std::string fReplyTo;
+        std::string fQueueName;
+        bool fIsWaitingForMessage;
+
+        // private functions
+        std::string uuid();
+        void resetBuffer();
+        bool isClient();
+    };
+
+} 
+
+#endif /* !_WASTE_AMQP_TRANSPORT_H */
+
+// LOG:
+// 06-25-2009 Chiharu Kawatake	created
+

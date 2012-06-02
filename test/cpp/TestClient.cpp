@@ -1,6 +1,6 @@
 // File: TestClient.cpp - last edit:
-// Chiharu Kawatake	07-02-2009
-// Copyright (c) 2009 by Chiharu Kawatake
+// Chiharu Kawatake	05-30-2012
+// Copyright (c) 2012 by Chiharu Kawatake
 // All rights reserved.
 
 #include <thrift/Thrift.h>
