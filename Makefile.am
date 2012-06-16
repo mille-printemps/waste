@@ -1,0 +1,5 @@
+
+SUBDIRS =	\
+deps		\
+lib			\
+test

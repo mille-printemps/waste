@@ -1,14 +1,15 @@
+AM_CXXFLAGS = -Wall 
+AM_CPPFLAGS = -I./include $(BOOST_CPPFLAGS) $(THRIFT_CPPFLAGS) $(RABBITMQ_C_CPPFLAGS)
 
-lib_LIBRARIES = libamqp.a
+lib_LIBRARIES = libwaste.a
 
-libamqp_a_SOURCES =	\
-Amqp.cpp		\
-AmqpServerTransport.cpp	\
-RabbitMqAmqpImpl.cpp	\
-AmqpFactory.cpp		\
-AmqpTransport.cpp	\
-RabbitMqAmqpImpl.h	\
-Debug.h
+libwaste_a_SOURCES =         \
+src/Amqp.cpp		        \
+src/AmqpServerTransport.cpp \
+src/RabbitMqAmqpImpl.cpp    \
+src/AmqpFactory.cpp	        \
+src/AmqpTransport.cpp       \
+src/RabbitMqAmqpImpl.h      \
+src/Debug.h
 
-AM_CXXFLAGS = -O2 -Wall
-AM_CPPFLAGS = -I. -I../include
+libwaste_a_CPPFLAGS = $(AM_CPPFLAGS)

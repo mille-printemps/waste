@@ -1,20 +1,25 @@
 #
 ERLC		=	erlc
 ERL			=	erl -boot start_clean
-OBJDIR		=	../../ebin
-INCDIR		=	../gen-erl
-THRIFTDIR	=	../gen-erl
+OBJDIR		=	../../lib/erl/ebin
+INCDIR		=	gen-erl
+THRIFTDIR	=	gen-erl
+THRIFTFILE	=	../Test.thrift
+THRIFT		=	thrift
 
 SRCS		=	$(wildcard *.erl) $(wildcard $(THRIFTDIR)/*.erl)
 INCLUDES	=	$(wildcard $(INCDIR)/*.hrl)
 OBJS		=	$(SRCS:%.erl=$(OBJDIR)/%.beam)
 
-EFLAGS		=	-I $(INCDIR) -o $(OBJDIR) -W +debug_info -smp # -Wall +native -v
+EFLAGS		=	-I $(INCDIR) -o $(OBJDIR) -W +debug_info -smp -Wall -pa $(OBJDIR) -v
 
-all: $(OBJS)
+all: $(THRIFTDIR)/ $(OBJS)
+
+$(THRIFTDIR)/: $(THRIFTFILE)
+	$(THRIFT) --gen erl $(THRIFTFILE)
 
 $(OBJDIR)/%.beam: %.erl $(INCLUDES)
 	erlc $(EFLAGS) $<
 
 clean:
-	rm -rf $(OBJDIR)/*.beam erl_crash.dump
+	rm -rf $(OBJDIR) erl_crash.dump

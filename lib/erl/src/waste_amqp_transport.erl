@@ -133,6 +133,7 @@ handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer, waiting
         true ->
             receive
                 {#'basic.deliver'{}, Content} ->
+%                    {content, _ClassId, _Properties, _PropertiesBin, [Payload]} = Content,
                     {amqp_msg, _Properties, Payload} = Content,
                     {ok, WriteState} = write_buffer(Buffer, Payload, State),
                     {Result, ReadState} = read_buffer(WriteState#amqp_transport.buffer, Len, WriteState),
@@ -219,6 +220,9 @@ read_buffer(Buffer, Len, State) ->
     {Result, Remaining} = split_binary(Binary, Give),
     {{ok, Result}, State#amqp_transport{buffer = Remaining}}.
     
+%%min(A,B) when A<B -> A;
+%%min(_,B)          -> B.
+
 uuid() ->
     {Year, Month, Day} = erlang:date(),
     {_MegaSec, Sec, MicroSec} = erlang:now(),
