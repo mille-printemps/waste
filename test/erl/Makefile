@@ -22,4 +22,4 @@ $(OBJDIR)/%.beam: %.erl $(INCLUDES)
 	erlc $(EFLAGS) $<
 
 clean:
-	rm -rf $(OBJDIR) erl_crash.dump
+	rm -rf $(OBJDIR) $(THRIFTDIR) erl_crash.dump
