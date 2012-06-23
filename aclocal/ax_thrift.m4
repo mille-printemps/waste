@@ -5,14 +5,17 @@ succeeded=no
 
 for ac_thrift_path_tmp in /usr /usr/local /opt /opt/local ; do
     if test -d "$ac_thrift_path_tmp/include/thrift" && test -r "$ac_thrift_path_tmp/include/thrift"; then
+        THRIFT_LIBPATH=$ac_thrift_path_tmp/lib
         THRIFT_LDFLAGS="-L$ac_thrift_path_tmp/lib"
 		THRIFT_CPPFLAGS="-I$ac_thrift_path_tmp/include/thrift"
 		break;
 	fi
 done
 
+export THRIFT_LIBPATH
+
 CPPFLAGS_SAVED="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $THRIFT_CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $THRIFT_CPPFLAGS $BOOST_CPPFLAGS"
 export CPPFLAGS
 
 LDFLAGS_SAVED="$LDFLAGS"
@@ -35,6 +38,7 @@ AC_LANG_POP([C++])
 if test "$succeeded" != "yes" ; then
    	AC_MSG_ERROR([[We could not detect the thrift libraries.]])
 else
+    AC_SUBST(THRIFT_LIBPATH)
 	AC_SUBST(THRIFT_CPPFLAGS)
 	AC_SUBST(THRIFT_LDFLAGS)
     AC_SUBST(THRIFT_LIBS)

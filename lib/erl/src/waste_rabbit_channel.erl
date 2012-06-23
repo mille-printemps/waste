@@ -2,9 +2,10 @@
 
 -module(waste_rabbit_channel).
 
--include_lib("lib/amqp_client/include/amqp_client.hrl").
 %-include_lib("lib/rabbit_common/include/rabbit.hrl").
 %-include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
+%-include_lib("lib/amqp_client/include/amqp_client.hrl").
+-include("amqp_client.hrl").
 
 -behaviour(gen_server).
 -behaviour(waste_channel).

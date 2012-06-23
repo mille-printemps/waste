@@ -1,6 +1,7 @@
 -module(waste_amqp_transport).
 
--include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
+%%-include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
+-include("rabbit_framing.hrl").
 
 -behaviour(gen_server).
 -behaviour(thrift_transport).

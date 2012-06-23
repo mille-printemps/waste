@@ -24,6 +24,7 @@
 # LAST MODIFICATION
 #
 #   2007-07-28
+#   Modified for use in Thrift
 #
 # COPYLEFT
 #
@@ -69,11 +70,13 @@ if test "x$want_boost" = "xyes"; then
 	if test "$ac_boost_path" != ""; then
 		BOOST_LDFLAGS="-L$ac_boost_path/lib"
 		BOOST_CPPFLAGS="-I$ac_boost_path/include"
+		BOOST_ROOT_PATH="$ac_boost_path"
 	else
 		for ac_boost_path_tmp in /usr /usr/local /opt /opt/local ; do
 			if test -d "$ac_boost_path_tmp/include/boost" && test -r "$ac_boost_path_tmp/include/boost"; then
 				BOOST_LDFLAGS="-L$ac_boost_path_tmp/lib"
 				BOOST_CPPFLAGS="-I$ac_boost_path_tmp/include"
+				BOOST_ROOT_PATH="$ac_boost_path_tmp"
 				break;
 			fi
 		done
@@ -86,6 +89,8 @@ if test "x$want_boost" = "xyes"; then
 	LDFLAGS_SAVED="$LDFLAGS"
 	LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 	export LDFLAGS
+
+	export BOOST_ROOT_PATH
 
 	AC_LANG_PUSH(C++)
      	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -140,6 +145,7 @@ if test "x$want_boost" = "xyes"; then
 			VERSION_UNDERSCORE=`echo $_version | sed 's/\./_/'`
 			BOOST_CPPFLAGS="-I$best_path/include/boost-$VERSION_UNDERSCORE"
 			BOOST_LDFLAGS="-L$best_path/lib"
+			BOOST_ROOT_PATH="$best_path"
 
 	    		if test "x$BOOST_ROOT" != "x"; then
 				if test -d "$BOOST_ROOT" && test -r "$BOOST_ROOT" && test -d "$BOOST_ROOT/stage/lib" && test -r "$BOOST_ROOT/stage/lib"; then
@@ -151,6 +157,7 @@ if test "x$want_boost" = "xyes"; then
 						AC_MSG_NOTICE(We will use a staged boost library from $BOOST_ROOT)
 						BOOST_CPPFLAGS="-I$BOOST_ROOT"
 						BOOST_LDFLAGS="-L$BOOST_ROOT/stage/lib"
+						BOOST_ROOT_PATH="$BOOST_ROOT"
 					fi
 				fi
 	    		fi
@@ -160,6 +167,7 @@ if test "x$want_boost" = "xyes"; then
 		export CPPFLAGS
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 		export LDFLAGS
+		export BOOST_ROOT_PATH
 
 		AC_LANG_PUSH(C++)
 	     	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -181,13 +189,14 @@ if test "x$want_boost" = "xyes"; then
 
 	if test "$succeeded" != "yes" ; then
 		if test "$_version" = "0" ; then
-			AC_MSG_ERROR([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>. See http://randspringer.de/boost for more documentation.]])
+			AC_MSG_WARN([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>. See http://randspringer.de/boost for more documentation.]])
 		else
-			AC_MSG_NOTICE([Your boost libraries seems to old (version $_version).])
+			AC_MSG_WARN([Your boost libraries seems to old (version $_version).])
 		fi
 	else
 		AC_SUBST(BOOST_CPPFLAGS)
 		AC_SUBST(BOOST_LDFLAGS)
+		AC_SUBST(BOOST_ROOT_PATH)
 		AC_DEFINE(HAVE_BOOST,,[define if the Boost library is available])
 	fi
 

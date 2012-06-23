@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([waste], [0.0.1])
+AC_INIT([waste], [0.1.0])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([lib/cpp/src/RabbitMqAmqpImpl.h])
 AC_CONFIG_HEADERS([config.h])
@@ -65,6 +65,8 @@ AC_CONFIG_FILES([Makefile
                  deps/Makefile
                  lib/Makefile
                  lib/cpp/Makefile
+                 lib/erl/Makefile                 
                  test/Makefile
-                 test/cpp/Makefile])
+                 test/cpp/Makefile
+                 test/erl/Makefile])
 AC_OUTPUT
