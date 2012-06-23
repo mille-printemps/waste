@@ -1,4 +1,4 @@
-# Waste - Experimental fault-tolerant RPC library using Thrift and AMQP
+# Waste - Experimental RPC library using Thrift and AMQP
 
 ## Introduction
 
