@@ -1,8 +1,3 @@
-// File: RabbitMqAmqpImpl.cpp - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -295,7 +290,7 @@ RabbitMqChannelImpl::subscribe(const string& queueName)
                        emptyBytes, // consumer tag
                        0, // no local
                        1, // no ack
-                       0,  // exclusive
+                       0, // exclusive
                        emptyTable);
     
     int result = RabbitMqValidator::validate(amqp_get_rpc_reply(fConnection), "Consuming");
@@ -536,8 +531,3 @@ RabbitMqValidator::validate(amqp_rpc_reply_t result, const string& context)
 
     return (0);
 }
-
-
-// LOG:
-// 06-23-2009 Chiharu Kawatake	created
-

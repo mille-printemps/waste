@@ -1,8 +1,3 @@
-// File: TestClient.cpp - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #include <thrift/Thrift.h>
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/transport/TTransportUtils.h>
@@ -64,6 +59,3 @@ int main(int argc, char** argv) {
     channel->close();
     amqp->disconnect();
 }
-
-// LOG:
-// 07-02-2009 Chiharu Kawatake	created

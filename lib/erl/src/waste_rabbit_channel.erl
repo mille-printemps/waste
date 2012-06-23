@@ -2,14 +2,10 @@
 
 -module(waste_rabbit_channel).
 
-%-include_lib("lib/rabbit_common/include/rabbit.hrl").
-%-include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
-%-include_lib("lib/amqp_client/include/amqp_client.hrl").
 -include("amqp_client.hrl").
 
 -behaviour(gen_server).
 -behaviour(waste_channel).
-%%-behaviour(channel).
 
 
 %% API
@@ -125,25 +121,12 @@ handle_call({publish, X, RoutingKey, Message, ReplyTo}, _From, State = #state{ch
                                     routing_key = RoutingKey,
                                     mandatory = false,
                                     immediate = false},
-%    {ClassId, _MethodId} = rabbit_framing:method_id('basic.publish'),
-%    
-%    Content = #content{class_id = ClassId,
-%                       properties = Properties,
-%                       properties_bin = none,
-%                       payload_fragments_rev = [Message]},
-%    amqp_channel:cast(Channel, BasicPublish, Content),
-    
     Content = #amqp_msg{props = Properties, payload = Message},
     amqp_channel:cast(Channel, BasicPublish, Content),
     {reply, ok, State};
 
 
 handle_call(close, _From, State = #state{channel = Channel}) ->
-%    ChannelClose = #'channel.close'{reply_code = 200,
-%                                    reply_text = <<"Goodbye">>,
-%                                    class_id = 0,
-%                                    method_id = 0},
-%    #'channel.close_ok'{} = amqp_channel:call(Channel, ChannelClose),
     amqp_channel:close(Channel),    
 
     {reply, ok, State}.

@@ -1,8 +1,3 @@
-// File: TestServer.cpp - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #include <thrift/concurrency/ThreadManager.h>
 #include <thrift/concurrency/PosixThreadFactory.h>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -101,11 +96,3 @@ int main(int argc, char **argv) {
     amqp->disconnect();
     return 0;
 }
-
-
-// LOG:
-// 07-02-2009 Chiharu Kawatake	created
-
-
-
-

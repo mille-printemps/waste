@@ -1,6 +1,5 @@
 -module(waste_amqp_transport).
 
-%%-include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
 -include("rabbit_framing.hrl").
 
 -behaviour(gen_server).
@@ -134,7 +133,6 @@ handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer, waiting
         true ->
             receive
                 {#'basic.deliver'{}, Content} ->
-%                    {content, _ClassId, _Properties, _PropertiesBin, [Payload]} = Content,
                     {amqp_msg, _Properties, Payload} = Content,
                     {ok, WriteState} = write_buffer(Buffer, Payload, State),
                     {Result, ReadState} = read_buffer(WriteState#amqp_transport.buffer, Len, WriteState),
@@ -221,14 +219,8 @@ read_buffer(Buffer, Len, State) ->
     {Result, Remaining} = split_binary(Binary, Give),
     {{ok, Result}, State#amqp_transport{buffer = Remaining}}.
     
-%%min(A,B) when A<B -> A;
-%%min(_,B)          -> B.
-
 uuid() ->
     {Year, Month, Day} = erlang:date(),
     {_MegaSec, Sec, MicroSec} = erlang:now(),
     ID = io_lib:format("~4.10.0B~2.10.0B~2.10.0BT~.10.0B.~.10B", [Year, Month, Day, Sec, MicroSec]),
     erlang:iolist_to_binary(ID).
-
-    
-    

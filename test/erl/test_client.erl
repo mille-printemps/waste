@@ -1,7 +1,8 @@
+%% An example of RPC client
+
 -module(test_client).
 
 -export([test/0]).
-
 
 test() ->
     Host = "127.0.0.1",

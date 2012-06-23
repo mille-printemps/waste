@@ -24,7 +24,7 @@ TestServer_LDFLAGS = $(AM_LDFLAGS)
 TestServer.cpp : gen-cpp/Test_types.h
 
 TestClient_SOURCES =       \
-TestClient.cpp         \
+TestClient.cpp	           \
 gen-cpp/Test.cpp           \
 gen-cpp/Test_constants.cpp \
 gen-cpp/Test_types.cpp     \
@@ -43,4 +43,3 @@ gen-cpp/Test.cpp gen-cpp/Test_constants.cpp gen-cpp/Test_types.cpp gen-cpp/Test_
 
 clean-local:
 	$(RM) -r gen-cpp
-

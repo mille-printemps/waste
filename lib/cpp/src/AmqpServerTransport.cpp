@@ -1,8 +1,3 @@
-// File: AmqpTransport.cpp - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #include <assert.h>
 #include <stdio.h>
 
@@ -74,8 +69,3 @@ AmqpServerTransport::acceptImpl()
 
     return ( shared_ptr<TTransport>(amqpTransport) );
 }
-
-
-// LOG:
-// 06-21-2009 Chiharu Kawatake	created
-

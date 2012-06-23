@@ -3,7 +3,6 @@
 %% A module that implements this template will also have to
 %% implement gen_server template. "
 
-
 -module(waste_amqp).
 
 -export([behaviour_info/1]).

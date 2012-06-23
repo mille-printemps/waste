@@ -1,8 +1,3 @@
-// File: AmqpFactory.cpp - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #include <string>
 #include <boost/shared_ptr.hpp>
 
@@ -41,8 +36,3 @@ AmqpFactory::create(const string& hostName,
                                       userName,
                                       password) );
 }
-
-
-// LOG:
-// 06-25-2009 Chiharu Kawatake	created
-

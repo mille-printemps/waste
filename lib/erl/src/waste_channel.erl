@@ -40,5 +40,3 @@ publish(Channel, X, RoutingKey, Message, ReplyTo) ->
 
 close(#channel{module = Module, data = Data}) ->
     Module:close(Data).
-
-

@@ -1,8 +1,3 @@
-// File: Debug.h - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #ifndef _WASTE_DEBUG_H
 #define _WASTE_DEBUG_H
 
@@ -56,7 +51,4 @@ namespace waste {
 } 
 
 #endif /* !_WASTE_DEBUG_H */
-
-// LOG:
-// 07-03-2009 Chiharu Kawatake	created
 

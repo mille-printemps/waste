@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I./include $(BOOST_CPPFLAGS) $(THRIFT_CPPFLAGS) $(RABBITMQ_C_CPPF
 
 lib_LIBRARIES = libwaste.a
 
-libwaste_a_SOURCES =         \
+libwaste_a_SOURCES =        \
 src/Amqp.cpp		        \
 src/AmqpServerTransport.cpp \
 src/RabbitMqAmqpImpl.cpp    \

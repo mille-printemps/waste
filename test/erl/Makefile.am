@@ -38,8 +38,3 @@ $(SCRIPT): $(THRIFTDIR)
 
 clean:
 	rm -rf $(THRIFTDIR) $(SCRIPT) erl_crash.dump
-
-
-
-
-

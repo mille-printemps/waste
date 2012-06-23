@@ -2,13 +2,10 @@
 
 -module(waste_rabbit_amqp).
 
-%%-include_lib("lib/rabbit_common/include/rabbit_framing.hrl").
-%%-include_lib("lib/amqp_client/include/amqp_client.hrl").
 -include("amqp_client.hrl").
 
 -behaviour(gen_server).
 -behaviour(waste_amqp).
-%%-behaviour(amqp).
 
 %% API
 -export([new/5,
@@ -50,7 +47,6 @@ new(Host, Port, VHost, User, Password) ->
             Else
     end.
 
-
 new_amqp_factory(Host, Port, VHost, User, Password) ->
     {ok, fun() -> new(Host, Port, VHost, User, Password) end}.
 
@@ -82,31 +78,22 @@ handle_call(connect, _From, State = #state{serverhost = Host,
                                            vhostpath = VHost,
                                            username = User,
                                            password = Password}) ->
-%%    Connection = amqp_connection:start(User, Password, Host, VHost),
     AmqpParams = #'amqp_params_network'{username = User,
                                         password = Password,
                                         host = Host,
                                         virtual_host = VHost},
-    %%Connection = amqp_connection:start(AmqpParams),
     {ok, Connection} = amqp_connection:start(AmqpParams),        
     {reply, ok, State#state{connection = Connection}};
 
 
 handle_call(open, _From, State = #state{connection = Connection}) ->
-%%    Parent = amqp_connection:open_channel(Connection),
     {ok, Parent} = amqp_connection:open_channel(Connection),    
     {ok, Channel} = waste_rabbit_channel:new(Parent),
     {reply, {ok, Channel}, State};
 
 
 handle_call(disconnect, _From, State = #state{connection = Connection}) ->
-%    ConnectionClose = #'connection.close'{reply_code = 200,
-%                                          reply_text = <<"Goodbye">>,
-%                                          class_id = 0,
-%                                          method_id = 0},
-%    #'connection.close_ok'{} = amqp_connection:close(Connection, ConnectionClose),
     amqp_connection:close(Connection),
-    
     {reply, ok, State}.
 
 
@@ -147,10 +134,3 @@ terminate(_Reason, _State) ->
 %%--------------------------------------------------------------------
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
-
-    
-    
-    
-    
-

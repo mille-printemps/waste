@@ -1,8 +1,3 @@
-// File: AmqpFactory.h - last edit:
-// Chiharu Kawatake	05-30-2012
-// Copyright (c) 2012 by Chiharu Kawatake
-// All rights reserved.
-
 #ifndef _WASTE_AMQP_FACTORY_H
 #define _WASTE_AMQP_FACTORY_H
 
@@ -31,7 +26,4 @@ namespace waste {
 } 
 
 #endif /* !_WASTE_AMQP_FACTORY_H */
-
-// LOG:
-// 06-25-2009 Chiharu Kawatake	created
 
