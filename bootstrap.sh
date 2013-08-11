@@ -1,6 +1,12 @@
 #!/bin/sh
 
-./cleanup.sh
+if [ -n "$1" ] && [ "-a"="$1" ]; then
+    ./cleanup.sh -a
+else
+    ./cleanup.sh
+fi    
+
+./rebar get-deps
 
 autoscan || exit 1
 aclocal -I ./aclocal || exit 1

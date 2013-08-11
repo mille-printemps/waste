@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ -n "$1" ] && [ "-a"="$1" ]; then
+    ./rebar delete-deps
+fi    
+
 topsrcdir="`dirname $0`"
 cd "$topsrcdir"
 
