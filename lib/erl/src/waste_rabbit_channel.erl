@@ -40,6 +40,7 @@ new(Channel) ->
             Else
     end.
 
+
 new_channel_factory(Channel) ->
     {ok, fun() -> new(Channel) end}.
 
@@ -47,11 +48,14 @@ new_channel_factory(Channel) ->
 setup_queue(ChannelPid, X, RoutingKey, Q) ->
     gen_server:call(ChannelPid, {setup_queue, X, RoutingKey, Q}).
 
+
 subscribe(ChannelPid, Q, Consumer) ->
     gen_server:call(ChannelPid, {subscribe, Q, Consumer}).
 
+
 publish(ChannelPid, X, RoutingKey, Message, ReplyTo) ->
     gen_server:call(ChannelPid, {publish, X, RoutingKey, Message, ReplyTo}).
+
 
 close(ChannelPid) ->
     gen_server:call(ChannelPid, close).
@@ -151,6 +155,7 @@ handle_cast(_Message, State) ->
 handle_info(_Info, State) ->
     {noreply, State}.
 
+
 %%--------------------------------------------------------------------
 %% Function: terminate(Reason, State) -> void()
 %% Description: This function is called by a gen_server when it is about to
@@ -160,6 +165,7 @@ handle_info(_Info, State) ->
 %%--------------------------------------------------------------------
 terminate(_Reason, _State) ->
     ok.
+
 
 %%--------------------------------------------------------------------
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}

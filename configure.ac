@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([waste], [0.1.0])
+AC_INIT([waste], [0.1.1])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([lib/cpp/src/RabbitMqAmqpImpl.h])
 AC_CONFIG_HEADERS([config.h])
@@ -20,8 +20,9 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
 AC_LANG([C++])
+AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
-AX_BOOST_BASE([1.33.1])
+AX_BOOST_BASE([1.40.0])
 AX_THRIFT([])
 AX_RABBITMQ_C([])
 
@@ -33,14 +34,22 @@ check_erlang() {
     then
       return
     fi
-    ERLANG=$1
-    if $ERLANG -version 2>/dev/null
-    then
-      found_erlang=yes
-      AC_MSG_RESULT($ERLANG)
+    AC_ERLANG_PATH_ERL
+    AC_ERLANG_PATH_ERLC
+    if test -n "$ERLC" ; then
+       AC_ERLANG_SUBST_LIB_DIR
+       # Install into the detected Erlang directory instead of $libdir/erlang/lib
+       ERLANG_INSTALL_LIB_DIR="$ERLANG_LIB_DIR"
+       AC_ERLANG_SUBST_INSTALL_LIB_SUBDIR(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+    fi
+    if test -n "$ERL" -a -n "$ERLC" ; then
+       found_erlang="yes"
+       AC_MSG_RESULT($ERL)
     fi
 }
-check_erlang erl
+
+check_erlang
+
 if test "$found_erlang" = "no"
 then
   AC_MSG_ERROR(could not find erlang)

@@ -15,24 +15,25 @@ test() ->
 
     %% pre-process
     {ok, Amqp} = waste_rabbit_amqp:new(Host, Port, VHost, User, Password),
-    ok = waste_amqp:connect(Amqp),
+    waste_amqp:connect(Amqp),
     {ok, Channel} = waste_amqp:open(Amqp),
 
     {ok, AmqpTransport} = waste_amqp_transport:new(Channel, X, RoutingKey),
     {ok, ProtocolFactory} =
         thrift_binary_protocol:new_protocol_factory(
           fun() -> thrift_framed_transport:new(AmqpTransport) end, []),
+    {ok, Protocol} = ProtocolFactory(),
 
     %% execution
-    {ok, Client} = thrift_client:start_link(ProtocolFactory, test_thrift),
+    {ok, Client} = thrift_client:new(Protocol, test_thrift),    
 
     Request = "hello",
     io:format("send -> ~s~n", [Request]),
-    {ok, Result} = thrift_client:call(Client, echo, [Request]),
+    {_, {ok, Result}} = thrift_client:call(Client, echo, [Request]),    
     io:format("receive -> ~s~n", [erlang:binary_to_list(Result)]),
 
-    ok = thrift_client:close(Client),
+    thrift_client:close(Client),        
 
     %% post-process
-    ok = waste_channel:close(Channel),
-    ok = waste_amqp:disconnect(Amqp).
+    waste_channel:close(Channel),
+    waste_amqp:disconnect(Amqp).

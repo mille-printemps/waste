@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <boost/shared_ptr.hpp>
 
 #include "amqp.h"
 #include "amqp_framing.h"
@@ -14,12 +15,11 @@
 #include "Debug.h"
 
 using namespace waste;
-using namespace boost;
 using namespace std;
 
-const int RabbitMqAmqpImpl::CHANNEL_MAX = 0;
-const int RabbitMqAmqpImpl::FRAME_MAX = 131072;
-const int RabbitMqAmqpImpl::DEFAULT_CHANNEL = 1;
+const uint16_t RabbitMqAmqpImpl::CHANNEL_MAX = 0;
+const uint32_t RabbitMqAmqpImpl::FRAME_MAX = 131072;
+const uint16_t RabbitMqAmqpImpl::DEFAULT_CHANNEL = 1;
 const string RabbitMqAmqpImpl::DEFAULT_VIRTUAL_HOST_NAME = "/";
 
 const char* RabbitMqAmqpImpl::MODULE = "RabbitMqAmqpImpl";
@@ -31,7 +31,7 @@ const char* RabbitMqChannelImpl::MODULE = "RabbitMqChannelImpl";
 // RabbitMqAmqpImpl
 // constructors and destructor
 RabbitMqAmqpImpl::RabbitMqAmqpImpl(const string& hostName,
-                                   const int port,
+                                   const uint16_t port,
                                    const string& virtualHostName,
                                    const string& userName,
                                    const string& password):
@@ -57,7 +57,7 @@ RabbitMqAmqpImpl:: ~RabbitMqAmqpImpl()
 // public member functions
 RabbitMqAmqpImpl*
 RabbitMqAmqpImpl::create(const string& hostName,
-                         const int port,
+                         const uint16_t port,
                          const string& virtualHostName,
                          const string& userName,
                          const string& password)
@@ -119,7 +119,7 @@ RabbitMqAmqpImpl::connect()
 }
 
 
-shared_ptr<Amqp::Channel>
+boost::shared_ptr<Amqp::Channel>
 RabbitMqAmqpImpl::open()
 {
     if (Debug::ON) {
@@ -139,9 +139,9 @@ RabbitMqAmqpImpl::open()
     amqp_channel_open(fConnection, channelValue);
     result = RabbitMqValidator::validate(amqp_get_rpc_reply(fConnection), "Opening channel");
 
-    shared_ptr<Amqp::Channel> channel;
+    boost::shared_ptr<Amqp::Channel> channel;
     if (1 == result) {
-        channel = shared_ptr<Amqp::Channel>( new RabbitMqChannelImpl(fConnection, channelValue) );
+        channel = boost::shared_ptr<Amqp::Channel>( new RabbitMqChannelImpl(fConnection, channelValue) );
     }
 
     if (Debug::ON) {

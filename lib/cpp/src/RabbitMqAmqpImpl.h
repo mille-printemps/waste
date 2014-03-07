@@ -14,19 +14,19 @@ namespace waste {
     private:
         // constructors
         RabbitMqAmqpImpl(const std::string& hostName,
-                         const int port,
+                         const std::uint16_t port,
                          const std::string& virtualHostName,
                          const std::string& userName,
                          const std::string& password);
 
     public:
-        static const int FRAME_MAX;
-        static const int CHANNEL_MAX;
-        static const int DEFAULT_CHANNEL;
+        static const std::uint32_t FRAME_MAX;
+        static const std::uint16_t CHANNEL_MAX;
+        static const std::uint16_t DEFAULT_CHANNEL;
         static const std::string DEFAULT_VIRTUAL_HOST_NAME;
 
         static RabbitMqAmqpImpl* create(const std::string& hostName,
-                                        const int port,
+                                        const std::uint16_t port,
                                         const std::string& virtualHostName,
                                         const std::string& userName,
                                         const std::string& password);
@@ -53,10 +53,10 @@ namespace waste {
         std::string fPassword;
         amqp_connection_state_t fConnection;
         int fSocket;
-        uint16_t fCurrentChannel;
+        std::uint16_t fCurrentChannel;
 
         // private functions
-        uint16_t assignChannel();
+        std::uint16_t assignChannel();
 
         // avoids copying any instances of this class
         RabbitMqAmqpImpl(const RabbitMqAmqpImpl&);
@@ -92,7 +92,7 @@ namespace waste {
 
         // private variables
         amqp_connection_state_t fConnection;
-        uint16_t fChannel;
+        std::uint16_t fChannel;
     };
 
     class RabbitMqValidator {

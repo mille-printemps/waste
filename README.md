@@ -31,9 +31,9 @@ in the package.
 
 Thrift can be downloaded at
 
-- <http://archive.apache.org/dist/incubator/thrift/>
+- <http://archive.apache.org/dist/thrift/>
 
-Note that curretly Waste only supports Thrift Version 0.4.0.
+Note that curretly Waste supports Thrift Version 0.9.0 or later.
 Install it as instructed in the package.
 
 

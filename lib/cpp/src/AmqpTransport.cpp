@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "AmqpInterface.h"
@@ -9,7 +10,6 @@
 #include "Debug.h"
 
 using namespace waste;
-using namespace boost;
 using namespace boost::posix_time;
 using namespace std;
 
@@ -17,7 +17,7 @@ const char* AmqpTransport::MODULE = "AmqpTransport";
 const char* AmqpTransport::NO_REPLY_TO = "no-reply-to";
 
 // constructors and destructor
-AmqpTransport::AmqpTransport(shared_ptr<Amqp::Channel> channel,
+AmqpTransport::AmqpTransport(boost::shared_ptr<Amqp::Channel> channel,
                              const string& exchangeName,
                              const string& routingKey,
                              const string& queueName):

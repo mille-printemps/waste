@@ -1,6 +1,7 @@
 #ifndef _WASTE_AMQP_TRANSPORT_H
 #define _WASTE_AMQP_TRANSPORT_H
 
+#include <cstdint>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <thrift/transport/TTransportException.h>
@@ -25,8 +26,8 @@ namespace waste {
         // public functions
         bool isOpen();
         void open();
-        uint32_t read(uint8_t* buf, uint32_t len);
-        void write(const uint8_t* buf, uint32_t len);
+        std::uint32_t read(std::uint8_t* buf, std::uint32_t len);
+        void write(const std::uint8_t* buf, std::uint32_t len);
         void close();
         void flush();
 

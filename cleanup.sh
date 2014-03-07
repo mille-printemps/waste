@@ -21,11 +21,11 @@ Makefile.orig \
 aclocal.m4 \
 autom4te.cache \
 autoscan.log \
+compile \
 config.guess \
 config.h \
 config.h.in \
 config.hin \
-config.hin~ \
 config.log \
 config.status \
 config.status.lineno \

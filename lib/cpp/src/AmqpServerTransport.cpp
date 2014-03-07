@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include <thrift/transport/TTransport.h>
 
 #include "amqp.h"
@@ -13,13 +14,12 @@
 
 using namespace waste;
 using namespace apache::thrift::transport;
-using namespace boost;
 using namespace std;
 
 const char* AmqpServerTransport::MODULE = "AmqpServerTransport";
 
 // constructors and destructor
-AmqpServerTransport::AmqpServerTransport(shared_ptr<Amqp::Channel> channel,
+AmqpServerTransport::AmqpServerTransport(boost::shared_ptr<Amqp::Channel> channel,
                                          const string& exchangeName,
                                          const string& routingKey,
                                          const string& queueName) :
@@ -53,7 +53,7 @@ AmqpServerTransport::close()
 }
 
 // protected member functions
-shared_ptr<TTransport>
+boost::shared_ptr<TTransport>
 AmqpServerTransport::acceptImpl()
 {
     message_string message;
@@ -67,5 +67,5 @@ AmqpServerTransport::acceptImpl()
     // write the message to the memory buffer    
     amqpTransport->write(message.data(), message.length());
 
-    return ( shared_ptr<TTransport>(amqpTransport) );
+    return ( boost::shared_ptr<TTransport>(amqpTransport) );
 }

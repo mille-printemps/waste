@@ -7,10 +7,10 @@ THRIFTFILE	=	../Test.thrift
 THRIFT		=	thrift
 
 SRCS		=	$(wildcard *.erl) $(wildcard $(THRIFTDIR)/*.erl)
-INCLUDES	=	$(wildcard $(foreach i,$(INCDIR), $i/*.hrl))
+INCS		=	$(wildcard $(foreach i,$(INCDIR), $i/*.hrl))
 OBJS		=	$(SRCS:%.erl=$(OBJDIR)/%.beam)
 
-EFLAGS		=	$(foreach i,$(INCDIR), -I $i) -o $(OBJDIR) +debug_info -smp -Wall -pa $(OBJDIR) -pa $(THRIFT_LIBPATH)/erlang/lib/thrift-0.4.0/ebin -v
+EFLAGS		=	$(foreach i,$(INCDIR), -I $i) -o $(OBJDIR) +debug_info -smp -Wall -pa $(OBJDIR) -pa $(ERLANG_INSTALL_LIB_DIR)/erlang/lib/thrift-0.9.0/ebin -v
 
 ECHO		=	echo
 TEE			=	tee -a
@@ -30,7 +30,7 @@ $(SCRIPT): $(THRIFTDIR)
 	chmod 755 $(SCRIPT)
 	@$(ECHO) '#!/bin/sh' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) '' 2>&1 | $(TEE) $(SCRIPT)
-	@$(ECHO) 'ERL_THRIFT='$(THRIFT_LIBPATH)'/erlang/lib/thrift-0.4.0' 2>&1 | $(TEE) $(SCRIPT)
+	@$(ECHO) 'ERL_THRIFT='$(ERLANG_INSTALL_LIB_DIR)'/erlang/lib/thrift-0.9.0' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) 'AMQP_SERVER=../../deps/rabbitmq-server' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) 'AMQP_CLIENT=../../deps/rabbitmq-erlang-client' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) '' 2>&1 | $(TEE) $(SCRIPT)

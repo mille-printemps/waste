@@ -37,7 +37,6 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-
 new(Channel, X, RoutingKey) ->
     case gen_server:start_link(?MODULE, [Channel, X, RoutingKey], []) of
         {ok, Pid} ->
@@ -46,8 +45,10 @@ new(Channel, X, RoutingKey) ->
             Else
     end.
 
+
 new_transport_factory(Channel, X, RoutingKey) ->
     {ok, fun() -> new(Channel, X, RoutingKey) end}.
+
 
 %%--------------------------------------------------------------------
 %% Function: write(Transport, Data) -> ok
@@ -57,7 +58,21 @@ new_transport_factory(Channel, X, RoutingKey) ->
 %% Description: Writes data into the buffer
 %%--------------------------------------------------------------------
 write(Transport, Data) ->
-    gen_server:call(Transport, {write, Data}).
+    gen_server:call(Transport, {write, Data}),
+    {Transport, ok}.        
+
+
+%%--------------------------------------------------------------------
+%% Function: read(Transport, Len) -> {ok, Data}
+%%
+%% Data = binary()
+%%
+%% Description: Reads data through from the wrapped transoprt
+%%--------------------------------------------------------------------
+read(Transport, Len) when is_integer(Len) ->
+    Result = gen_server:call(Transport, {read, Len}),
+    {Transport, Result}.    
+
 
 %%--------------------------------------------------------------------
 %% Function: flush(Transport) -> ok
@@ -65,7 +80,9 @@ write(Transport, Data) ->
 %% Description: Flushes the buffer through to the wrapped transport
 %%--------------------------------------------------------------------
 flush(Transport) ->
-    gen_server:call(Transport, flush).
+    gen_server:call(Transport, flush),
+    {Transport, ok}.    
+
 
 %%--------------------------------------------------------------------
 %% Function: close(Transport) -> ok
@@ -73,22 +90,13 @@ flush(Transport) ->
 %% Description: Closes the transport and the wrapped transport
 %%--------------------------------------------------------------------
 close(Transport) ->
-    gen_server:cast(Transport, close).
+    gen_server:call(Transport, close),
+    {Transport, ok}.
 
-%%--------------------------------------------------------------------
-%% Function: Read(Transport, Len) -> {ok, Data}
-%%
-%% Data = binary()
-%%
-%% Description: Reads data through from the wrapped transoprt
-%%--------------------------------------------------------------------
-read(Transport, Len) when is_integer(Len) ->
-    gen_server:call(Transport, {read, Len}).
 
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-
 %%--------------------------------------------------------------------
 %% Function: init(Args) -> {ok, State} |
 %%                         {ok, State, Timeout} |
@@ -113,8 +121,9 @@ init([Channel, X, RoutingKey]) ->
                          reply_to = ReplyTo,
                          waiting_for_message = true}}.
 
+
 %%--------------------------------------------------------------------
-%% Function: %% handle_call(Request, From, State) -> {reply, Reply, State} |
+%% Function: handle_call(Request, From, State) -> {reply, Reply, State} |
 %%                                      {reply, Reply, State, Timeout} |
 %%                                      {noreply, State} |
 %%                                      {noreply, State, Timeout} |
@@ -136,14 +145,14 @@ handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer, waiting
                     {amqp_msg, _Properties, Payload} = Content,
                     {ok, WriteState} = write_buffer(Buffer, Payload, State),
                     {Result, ReadState} = read_buffer(WriteState#amqp_transport.buffer, Len, WriteState),
-                    {reply, Result, ReadState};
+                    {reply, Result, ReadState};                
                 
                 Other ->
                     error_logger:error_report({?MODULE, ?LINE, [Other], erlang:get_stacktrace()})
             end;
         false ->
             {Result, ReadState} = read_buffer(Buffer, Len, State),
-            {reply, Result, ReadState}
+            {reply, Result, ReadState}                
     end;
 
 
@@ -153,8 +162,12 @@ handle_call(flush, _From, State = #amqp_transport{channel = Channel,
                                                   buffer = Buffer,
                                                   reply_to = ReplyTo}) ->
     waste_channel:publish(Channel, X, RoutingKey,
-                    iolist_to_binary(Buffer), iolist_to_binary(ReplyTo)),
-    {reply, ok, State#amqp_transport{buffer = [], waiting_for_message = true}}.
+                    erlang:iolist_to_binary(Buffer), erlang:iolist_to_binary(ReplyTo)),
+    {reply, ok, State#amqp_transport{buffer = [], waiting_for_message = true}};
+
+
+handle_call(close, _From, State = #amqp_transport{channel = _Channel}) ->
+    {reply, ok, State}.
 
 
 %%--------------------------------------------------------------------
@@ -163,11 +176,9 @@ handle_call(flush, _From, State = #amqp_transport{channel = Channel,
 %%                                      {stop, Reason, State}
 %% Description: Handling cast messages
 %%--------------------------------------------------------------------
-handle_cast(close, State = #amqp_transport{channel = _Channel}) ->
-    {stop, normal, State};
-
 handle_cast(_Message, State = #amqp_transport{}) ->
     {noreply, State}.
+
 
 %%--------------------------------------------------------------------
 %% Function: handle_info(Info, State) -> {noreply, State} |
@@ -185,7 +196,7 @@ handle_info({#'basic.deliver'{}, Content}, State) ->
     Pid = self(),
     Pid ! {#'basic.deliver'{}, Content},
     {noreply, State}.
-    
+
 
 %%--------------------------------------------------------------------
 %% Function: terminate(Reason, State) -> void()
@@ -197,6 +208,7 @@ handle_info({#'basic.deliver'{}, Content}, State) ->
 terminate(_Reason, _State) ->
     ok.
 
+
 %%--------------------------------------------------------------------
 %% Func: code_change(OldVsn, State, Extra) -> {ok, NewState}
 %% Description: Convert process state when code is changed
@@ -204,19 +216,19 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+
 %%--------------------------------------------------------------------
 %%% Internal functions
 %%--------------------------------------------------------------------
-
 write_buffer(Buffer, Data, State) ->
     BufferState = State#amqp_transport{buffer = [Buffer, Data]},
     MessageState = BufferState#amqp_transport{waiting_for_message = false},
     {ok, MessageState}.
 
 read_buffer(Buffer, Len, State) ->
-    Binary = iolist_to_binary(Buffer),
+    Binary = erlang:iolist_to_binary(Buffer),
     Give = erlang:min(iolist_size(Binary), Len),
-    {Result, Remaining} = split_binary(Binary, Give),
+    {Result, Remaining} = erlang:split_binary(Binary, Give),
     {{ok, Result}, State#amqp_transport{buffer = Remaining}}.
     
 uuid() ->

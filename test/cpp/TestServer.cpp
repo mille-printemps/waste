@@ -5,6 +5,7 @@
 #include <thrift/server/TThreadPoolServer.h>
 #include <thrift/server/TThreadedServer.h>
 #include <thrift/transport/TTransportUtils.h>
+#include <boost/shared_ptr.hpp>
 
 #include <iostream>
 
@@ -15,7 +16,7 @@
 #include "Test.h"
 
 using namespace std;
-using namespace boost;
+//using namespace boost;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
@@ -50,16 +51,16 @@ int main(int argc, char **argv) {
     const string routingKey = "test";
     const string queueName = "test";    
 
-    shared_ptr<Amqp> amqp = AmqpFactory::get(hostName, port, virtualHostName, userName, password);
+    boost::shared_ptr<Amqp> amqp = AmqpFactory::get(hostName, port, virtualHostName, userName, password);
     
     amqp->connect();
-    shared_ptr<Amqp::Channel> channel = amqp->open();
+    boost::shared_ptr<Amqp::Channel> channel = amqp->open();
     
-    shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
-    shared_ptr<Test> test(new Test());
-    shared_ptr<TProcessor> processor(new TestProcessor(test));
-    shared_ptr<TServerTransport> serverTransport(new AmqpServerTransport(channel, exchangeName, routingKey, queueName));
-    shared_ptr<TTransportFactory> transportFactory(new TFramedTransportFactory());
+    boost::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+    boost::shared_ptr<Test> test(new Test());
+    boost::shared_ptr<TProcessor> processor(new TestProcessor(test));
+    boost::shared_ptr<TServerTransport> serverTransport(new AmqpServerTransport(channel, exchangeName, routingKey, queueName));
+    boost::shared_ptr<TTransportFactory> transportFactory(new TFramedTransportFactory());
 
     TSimpleServer server(processor,
                          serverTransport,
@@ -69,10 +70,10 @@ int main(int argc, char **argv) {
     /**
      * Or you could do one of these
 
-     shared_ptr<ThreadManager> threadManager =
+     boost::shared_ptr<ThreadManager> threadManager =
      ThreadManager::newSimpleThreadManager(workerCount);
-     shared_ptr<PosixThreadFactory> threadFactory =
-     shared_ptr<PosixThreadFactory>(new PosixThreadFactory());
+     boost::shared_ptr<PosixThreadFactory> threadFactory =
+     boost::shared_ptr<PosixThreadFactory>(new PosixThreadFactory());
      threadManager->threadFactory(threadFactory);
      threadManager->start();
      TThreadPoolServer server(processor,
@@ -88,9 +89,9 @@ int main(int argc, char **argv) {
 
     */
 
-    printf("Starting the server...\n");
+    cout << "Starting the server..." << endl;
     server.serve();
-    printf("done.\n");
+    cout << "done." << endl;
 
     channel->close();
     amqp->disconnect();

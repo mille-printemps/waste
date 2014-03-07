@@ -1,12 +1,13 @@
 #ifndef _WASTE_AMQP_INTERFACE_H
 #define _WASTE_AMQP_INTERFACE_H
 
+#include <cstdint>
 #include <string>
 #include <boost/shared_ptr.hpp>
 
 namespace waste {
 
-    typedef std::basic_string<uint8_t> message_string;
+    typedef std::basic_string<std::uint8_t> message_string;
     
     class Amqp {
     public:

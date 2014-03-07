@@ -38,7 +38,6 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-
 new(Host, Port, VHost, User, Password) ->
     case gen_server:start_link(?MODULE, [Host, Port, VHost, User, Password], []) of
         {ok, Pid} ->
@@ -64,7 +63,6 @@ disconnect(AmqpPid) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-
 init([Host, Port, VHost, User, Password]) ->
     {ok, #state{serverhost = Host,
                 port = Port,

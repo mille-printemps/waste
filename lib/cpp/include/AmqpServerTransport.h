@@ -27,6 +27,7 @@ namespace waste {
     protected:
         // overriding protected functions
         boost::shared_ptr<apache::thrift::transport::TTransport> acceptImpl();
+        
 
     private:
         // private static variables
