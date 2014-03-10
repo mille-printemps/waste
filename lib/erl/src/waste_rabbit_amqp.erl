@@ -24,9 +24,9 @@
          open/1,
          disconnect/1]).
 
--record(state, {serverhost,
+-record(state, {server_host,
                 port,
-                vhostpath,
+                virtual_host_path,
                 username,
                 password,
                 connection}).
@@ -38,16 +38,16 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-new(Host, Port, VHost, User, Password) ->
-    case gen_server:start_link(?MODULE, [Host, Port, VHost, User, Password], []) of
+new(ServerHost, Port, VHostPath, Username, Password) ->
+    case gen_server:start_link(?MODULE, [ServerHost, Port, VHostPath, Username, Password], []) of
         {ok, Pid} ->
             waste_amqp:new(?MODULE, Pid);
         Else ->
             Else
     end.
 
-new_amqp_factory(Host, Port, VHost, User, Password) ->
-    {ok, fun() -> new(Host, Port, VHost, User, Password) end}.
+new_amqp_factory(ServerHost, Port, VHostPath, Username, Password) ->
+    {ok, fun() -> new(ServerHost, Port, VHostPath, Username, Password) end}.
 
 
 connect(AmqpPid) ->
@@ -63,23 +63,23 @@ disconnect(AmqpPid) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-init([Host, Port, VHost, User, Password]) ->
-    {ok, #state{serverhost = Host,
+init([ServerHost, Port, VHostPath, Username, Password]) ->
+    {ok, #state{server_host = ServerHost,
                 port = Port,
-                vhostpath = VHost,
-                username = User,
+                virtual_host_path = VHostPath,
+                username = Username,
                 password = Password}}.
 
 
-handle_call(connect, _From, State = #state{serverhost = Host,
+handle_call(connect, _From, State = #state{server_host = ServerHost,
                                            port = _Port,
-                                           vhostpath = VHost,
-                                           username = User,
+                                           virtual_host_path = VHostPath,
+                                           username = Username,
                                            password = Password}) ->
-    AmqpParams = #'amqp_params_network'{username = User,
+    AmqpParams = #'amqp_params_network'{username = Username,
                                         password = Password,
-                                        host = Host,
-                                        virtual_host = VHost},
+                                        host = ServerHost,
+                                        virtual_host = VHostPath},
     {ok, Connection} = amqp_connection:start(AmqpParams),        
     {reply, ok, State#state{connection = Connection}};
 

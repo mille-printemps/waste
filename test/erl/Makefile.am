@@ -33,8 +33,9 @@ $(SCRIPT): $(THRIFTDIR)
 	@$(ECHO) 'ERL_THRIFT='$(ERLANG_INSTALL_LIB_DIR)'/erlang/lib/thrift-0.9.0' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) 'AMQP_SERVER=../../deps/rabbitmq-server' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) 'AMQP_CLIENT=../../deps/rabbitmq-erlang-client' 2>&1 | $(TEE) $(SCRIPT)
+	@$(ECHO) 'POOLBOY=../../deps/poolboy' 2>&1 | $(TEE) $(SCRIPT)
 	@$(ECHO) '' 2>&1 | $(TEE) $(SCRIPT)
-	@$(ECHO) 'erl +K true -pa $${ERL_THRIFT}/ebin $${AMQP_CLIENT}/ebin $${AMQP_SERVER}/ebin ../../lib/erl/ebin -noshell -s test_client test -s init stop' 2>&1 | $(TEE) $(SCRIPT)
+	@$(ECHO) 'erl +K true -pa $${ERL_THRIFT}/ebin $${AMQP_CLIENT}/ebin $${AMQP_SERVER}/ebin $${POOLBOY}/ebin ../../lib/erl/ebin ./ -noshell -s test_client test -s init stop' 2>&1 | $(TEE) $(SCRIPT)
 
 clean:
 	rm -rf $(THRIFTDIR) $(SCRIPT) erl_crash.dump

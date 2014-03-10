@@ -37,8 +37,8 @@
 %% Function: start_link() -> {ok,Pid} | ignore | {error,Error}
 %% Description: Starts the server
 %%--------------------------------------------------------------------
-new(Channel, X, RoutingKey) ->
-    case gen_server:start_link(?MODULE, [Channel, X, RoutingKey], []) of
+new(Channel, Exchange, RoutingKey) ->
+    case gen_server:start_link(?MODULE, [Channel, Exchange, RoutingKey], []) of
         {ok, Pid} ->
             thrift_transport:new(?MODULE, Pid);
         Else ->
@@ -46,8 +46,8 @@ new(Channel, X, RoutingKey) ->
     end.
 
 
-new_transport_factory(Channel, X, RoutingKey) ->
-    {ok, fun() -> new(Channel, X, RoutingKey) end}.
+new_transport_factory(Channel, Exchange, RoutingKey) ->
+    {ok, fun() -> new(Channel, Exchange, RoutingKey) end}.
 
 
 %%--------------------------------------------------------------------
@@ -104,18 +104,18 @@ close(Transport) ->
 %%                         {stop, Reason}
 %% Description: Initiates the server
 %%--------------------------------------------------------------------
-init([Channel, X, RoutingKey]) ->
+init([Channel, Exchange, RoutingKey]) ->
     %% creates a reply queue name
     ReplyTo = uuid(),
 
     %% bind the queue with the exchange and the routing key
-    waste_channel:setup_queue(Channel, X, ReplyTo, ReplyTo),
+    waste_channel:setup_queue(Channel, Exchange, ReplyTo, ReplyTo),
 
     %% subscribes the queue
     waste_channel:subscribe(Channel, ReplyTo, self()),
     
     {ok, #amqp_transport{channel = Channel,
-                         exchange = X,
+                         exchange = Exchange,
                          routing_key = RoutingKey,
                          buffer = [],
                          reply_to = ReplyTo,
@@ -136,7 +136,8 @@ handle_call({write, Data}, _From, State = #amqp_transport{buffer = Buffer}) ->
     {reply, ok, NewState};
     
 
-handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer, waiting_for_message = WaitingForMessage}) ->
+handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer,
+                                                        waiting_for_message = WaitingForMessage}) ->
     %% TODO : treat timeout cases
     case WaitingForMessage of
         true ->
@@ -157,11 +158,11 @@ handle_call({read, Len}, _From, State = #amqp_transport{buffer = Buffer, waiting
 
 
 handle_call(flush, _From, State = #amqp_transport{channel = Channel,
-                                                  exchange = X,
+                                                  exchange = Exchange,
                                                   routing_key = RoutingKey,
                                                   buffer = Buffer,
                                                   reply_to = ReplyTo}) ->
-    waste_channel:publish(Channel, X, RoutingKey,
+    waste_channel:publish(Channel, Exchange, RoutingKey,
                     erlang:iolist_to_binary(Buffer), erlang:iolist_to_binary(ReplyTo)),
     {reply, ok, State#amqp_transport{buffer = [], waiting_for_message = true}};
 

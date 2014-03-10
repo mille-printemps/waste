@@ -1,4 +1,4 @@
-
 SUBDIRS =		       \
 rabbitmq-server	       \
-rabbitmq-erlang-client
+rabbitmq-erlang-client \
+poolboy

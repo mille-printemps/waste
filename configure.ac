@@ -22,13 +22,15 @@ AC_PROG_RANLIB
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+# Checks for necessary libraries
 AX_BOOST_BASE([1.40.0])
 AX_THRIFT([])
 AX_RABBITMQ_C([])
 
-# Check for erlang
+# Checks for erlang
 AC_MSG_CHECKING(for erlang)
 found_erlang=no
+
 check_erlang() {
     if test "$found_erlang" = "yes"
     then
